@@ -11,14 +11,26 @@ function App() {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [filterOption, setFilterOption] = useState({
-    exp: { min: 1, max: 10 },
+    exp: [
+      { label: "1", value: 1 },
+      { label: "2", value: 2 },
+      { label: "3", value: 3 },
+      { label: "4", value: 4 },
+      { label: "5", value: 5 },
+      { label: "6", value: 6 },
+      { label: "7", value: 7 },
+      { label: "8", value: 8 },
+      { label: "9", value: 9 },
+      { label: "10", value: 10 },
+    ],
     remote: [
       { label: "Remote", value: "1" },
       { label: "On-Site", value: 2 },
       { label: "Hybrid", value: 3 },
     ],
     minBaseSalary: [
-      { label: "10L", value: 10 },
+      { label: "0L", value: 0 },
+      { label: "10L", value: 100 },
       { label: "20L", value: 20 },
       { label: "30L", value: 30 },
       { label: "40L", value: 40 },
@@ -37,7 +49,7 @@ function App() {
     ],
   });
   const [loading, setLoading] = useState(false);
-  //console.log(loading, "satyam sharma");
+
   const [page, setPage] = useState(1);
   const [filterSelectedOption, setFilterSelectedOption] = useState({
     exp: "",
@@ -71,14 +83,24 @@ function App() {
         selectedOptions.includes(item.jobRole.toLowerCase())
       );
       setJobListings(filteredData);
-    }
-    else if(filterSelectedOption?.remote){
-      const filteredData = jobListings.filter((item) =>
-        item?.remote.toLowerCase().includes(filterSelectedOption?.remote.toLowerCase())
+    } else if (filterSelectedOption?.exp) {
+      const filteredData = jobListings.filter(
+        (item) => item && item.minExp === filterSelectedOption?.exp?.value
       );
-      setJobListings(filteredData);
+      if (filteredData?.length) {
+        setJobListings(filteredData);
+      }
+    } else if (filterSelectedOption?.minBaseSalary) {
+      const filteredData = jobListings.filter(
+        (item) =>
+          item && item.minJdSalary <= filterSelectedOption?.minBaseSalary?.value
+      );
+
+      if (filteredData?.length) {
+        setJobListings(filteredData);
+      }
     }
-  }, [searchInput, selectedOptions,filterSelectedOption]);
+  }, [searchInput, selectedOptions, filterSelectedOption]);
 
   const getJobRelatedData = () => {
     const myHeaders = new Headers();
@@ -107,16 +129,17 @@ function App() {
         setJobListingsDropdownOption(modifiedList);
 
         if (response?.jdList?.length > 0) {
-          let maxExperience = response?.jdList.reduce((maxExp, listing) => {
-            return listing.maxExp ? Math.max(maxExp, listing.maxExp) : maxExp;
-          }, -Infinity);
-
+          const startSalary = 1; // Start from 80L
+          const endSalary = 100; // End at 100L
+          const step = 1;
+          const newMinBaseSalaryOptions = [];
+          for (let i = startSalary; i <= endSalary; i += step) {
+            const label = `${i}L`;
+            newMinBaseSalaryOptions.push({ label, value: i });
+          }
           setFilterOption({
             ...filterOption,
-            exp: {
-              ...filterOption.exp,
-              max: maxExperience,
-            },
+            minBaseSalary: newMinBaseSalaryOptions,
           });
         }
       })
@@ -232,6 +255,25 @@ function App() {
             }}
             renderInput={(params) => (
               <TextField {...params} placeholder="Remote" variant="outlined" />
+            )}
+          />
+        </div>
+        <div style={{ minWidth: "150px" }}>
+          <Autocomplete
+            options={filterOption?.exp}
+            getOptionLabel={(option) => option.label}
+            onChange={(e, value) => {
+              setFilterSelectedOption((prevState) => ({
+                ...prevState,
+                exp: value,
+              }));
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Experience"
+                variant="outlined"
+              />
             )}
           />
         </div>

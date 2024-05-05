@@ -29,7 +29,7 @@ const JobCard = ({ data }) => {
         <span>
           <h4 style={{ color: "rgb(77, 89, 106)" }}>
             Estimated Salary : {data?.minJdSalary || 0} -{" "}
-            {data?.minJdSalary || 0} {data?.salaryCurrencyCode} ✅
+            {data?.maxJdSalary || 0} {data?.salaryCurrencyCode || ""} ✅
           </h4>
         </span>
       </div>
@@ -41,9 +41,11 @@ const JobCard = ({ data }) => {
         <a href={data?.jdLink}>View Job</a>
       </div>
       <div style={{ marginTop: "1.5rem" }}>
-      
         <h3 className="expHeading"> Minimum Experience</h3>
-        <h2 className="headingValueExp"> {data?.minExp || 0} {"Years" || ""}</h2>
+        <h2 className="headingValueExp">
+          {" "}
+          {data?.minExp || 0} {"Years" || ""}
+        </h2>
       </div>
 
       <div style={{ marginTop: "1.5rem" }}>
