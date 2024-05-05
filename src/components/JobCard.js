@@ -40,10 +40,11 @@ const JobCard = ({ data }) => {
       <div style={{ display: "flex", justifyContent: "center" }}>
         <a href={data?.jdLink}>View Job</a>
       </div>
-     {data?.minExp && <div style={{ marginTop: "1.5rem" }}>
+      <div style={{ marginTop: "1.5rem" }}>
+      
         <h3 className="expHeading"> Minimum Experience</h3>
-        <h2 className="headingValueExp"> {data?.minExp} {"Years" || ""}</h2>
-      </div>}
+        <h2 className="headingValueExp"> {data?.minExp || 0} {"Years" || ""}</h2>
+      </div>
 
       <div style={{ marginTop: "1.5rem" }}>
         <Button
