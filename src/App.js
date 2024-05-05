@@ -4,12 +4,16 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { SearchDropDown } from "./components/SearchDropDown";
 import "./App.css";
 import JobCard from "./components/JobCard";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "./redux/users/users";
 
 function App() {
   const [jobListings, setJobListings] = useState([]);
   const [jobListingsDropdownOption, setJobListingsDropdownOption] = useState();
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const dispatch = useDispatch(s=>s.user);
+  const { userData } = useSelector((s) => s.user);
   const [filterOption, setFilterOption] = useState({
     exp: [
       { label: "1", value: 1 },
@@ -124,7 +128,7 @@ function App() {
       .then((response) => response.json())
       .then((response) => {
         setJobListings(response?.jdList);
-        // Assuming response.jdList is your array of objects
+        dispatch(setUser({ user: response?.jdList},))
         const modifiedList = response?.jdList?.map((item) => item.jobRole);
         setJobListingsDropdownOption(modifiedList);
 
